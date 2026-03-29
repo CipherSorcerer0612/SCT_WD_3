@@ -72,17 +72,13 @@ const BANK = {
     ]
   }
 };
-
-// ══════════════════════════════════════
-// ENGINE
-// ══════════════════════════════════════
 const Engine = {
   questions:[], current:0, score:0, streak:0, bestStreak:0, answers:[], answered:false,
 
   init() {
     const cats = Object.keys(BANK);
     const picked = [];
-    // 3 from first 3 cats, 2 from last 3 = 15 total
+    // 3 from first 3 cats, 2 from last 3
     cats.forEach((cat, i) => {
       const n = i < 3 ? 3 : 2;
       const pool = [...BANK[cat].qs].sort(()=>Math.random()-.5);
@@ -137,9 +133,6 @@ const Engine = {
   }
 };
 
-// ══════════════════════════════════════
-// RENDERERS
-// ══════════════════════════════════════
 const R = {
   single:{
     hint:null,
@@ -230,7 +223,7 @@ const R = {
         order.forEach((origIdx,pos)=>{
           const row=document.createElement('div'); row.className='order-item';
           row.draggable=true; row.dataset.pos=pos;
-          row.innerHTML=`<span class="drag-grip">⠿</span><span class="order-pos">${pos+1}</span><span style="flex:1">${q.items[origIdx]}</span>`;
+          row.innerHTML=`<span class="drag-grip">⠿</span><span class="order-pos">${pos+1}</span><span class="order-text">${q.items[origIdx]}</span>`;
           row.ondragstart=e=>{e.dataTransfer.setData('text/plain',String(pos));row.classList.add('dragging');};
           row.ondragend=()=>row.classList.remove('dragging');
           row.ondragover=e=>{e.preventDefault();row.classList.add('over');};
@@ -258,9 +251,6 @@ const R = {
   }
 };
 
-// ══════════════════════════════════════
-// UI
-// ══════════════════════════════════════
 const UI = {
   renderer:null, timerId:null, TIME:30,
 
@@ -274,9 +264,15 @@ const UI = {
 
   renderIntro(){
     const el=document.getElementById('subject-list');
-    el.innerHTML=Object.entries(BANK).map(([name,data])=>
-      `<span class="sub-chip" style="color:${data.color};background:${data.color}14;border-color:${data.color}30">${data.icon} ${name}</span>`
-    ).join('');
+    el.innerHTML=Object.entries(BANK).map(([name,data])=>{
+      const chip=document.createElement('span');
+      chip.className='sub-chip';
+      chip.style.color=data.color;
+      chip.style.background=data.color+'14';
+      chip.style.borderColor=data.color+'30';
+      chip.textContent=data.icon+' '+name;
+      return chip.outerHTML;
+    }).join('');
   },
 
   renderQ(q,idx,total,score){
@@ -289,8 +285,8 @@ const UI = {
 
     const hEl=document.getElementById('q-hint');
     const hint=R[q.type].hint;
-    if(hint){ document.getElementById('q-hint-txt').textContent=hint; hEl.style.display='flex'; }
-    else hEl.style.display='none';
+    if(hint){ document.getElementById('q-hint-txt').textContent=hint; hEl.classList.add('q-hint--show'); }
+    else hEl.classList.remove('q-hint--show');
 
     const area=document.getElementById('answer-area');
     area.innerHTML='';
@@ -345,7 +341,6 @@ const UI = {
     document.getElementById('st-accuracy').textContent=`${pct}%`;
     document.getElementById('st-streak').textContent=`${Engine.bestStreak}`;
 
-    // Category bars
     const stats=Engine.catStats();
     const barsEl=document.getElementById('cat-bars');
     barsEl.innerHTML='';
@@ -354,7 +349,6 @@ const UI = {
       .forEach(([cat,s])=>{
         const p=Math.round(s.correct/s.total*100);
         const isWeak=p<50, isStrong=p>=80;
-        const fillColor=isWeak?'var(--wrong)':isStrong?'var(--correct)':BANK[cat].color;
         const badge=isWeak?'<span class="badge badge-weak">Needs work</span>':isStrong?'<span class="badge badge-strong">Strong</span>':'';
         const row=document.createElement('div');
         row.className='cat-row';
@@ -363,11 +357,16 @@ const UI = {
             <div class="cat-name-lbl"><span>${BANK[cat].icon}</span><span>${cat}</span>${badge}</div>
             <span class="cat-score-lbl">${s.correct}/${s.total} · ${p}%</span>
           </div>
-          <div class="bar-track"><div class="bar-fill" style="width:${p}%;background:${fillColor}"></div></div>`;
+          <div class="bar-track"><div class="bar-fill" id="bar-${cat.replace(/\s+/g,'-')}"></div></div>`;
         barsEl.appendChild(row);
+        setTimeout(()=>{
+          const fillEl=document.getElementById(`bar-${cat.replace(/\s+/g,'-')}`);
+          const fillColor=isWeak?'var(--wrong)':isStrong?'var(--correct)':BANK[cat].color;
+          fillEl.style.width=p+'%';
+          fillEl.style.background=fillColor;
+        },50);
       });
 
-    // Personalised feedback
     const weakCats=Object.entries(stats).filter(([,s])=>s.correct/s.total<.5).map(([c])=>c);
     const strongCats=Object.entries(stats).filter(([,s])=>s.correct/s.total>=.8).map(([c])=>c);
     const fbEl=document.getElementById('fb-cards');
@@ -393,7 +392,6 @@ const UI = {
       fbEl.appendChild(el);
     });
 
-    // Review
     const revEl=document.getElementById('review-list');
     revEl.innerHTML='';
     Engine.answers.forEach(a=>{
@@ -422,7 +420,7 @@ const UI = {
       const el=document.createElement('div'); el.className=`rev-item ${cls}`;
       el.innerHTML=`
         <div class="rev-ico">${ico}</div>
-        <div style="flex:1;min-width:0">
+        <div class="rev-content">
           <div class="rev-q">${q.text.length>75?q.text.slice(0,75)+'…':q.text}</div>
           <div class="rev-ans">Your answer: ${userAns}</div>
           ${correctHtml}
@@ -433,9 +431,6 @@ const UI = {
   }
 };
 
-// ══════════════════════════════════════
-// CONTROLLER
-// ══════════════════════════════════════
 function startQuiz(){
   Engine.init();
   UI.show('quiz-screen');
@@ -472,5 +467,10 @@ function onTimeout(){
     UI.lockActions(); Engine.answered=true;
   }
 }
+
+document.getElementById('btn-start').addEventListener('click', startQuiz);
+document.getElementById('btn-again').addEventListener('click', startQuiz);
+document.getElementById('skip-btn').addEventListener('click', doSkip);
+document.getElementById('check-btn').addEventListener('click', handleCheck);
 
 UI.renderIntro();

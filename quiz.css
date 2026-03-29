@@ -40,7 +40,7 @@ body {
 .screen.active { display: block; animation: up .3s ease both; }
 @keyframes up { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
 
-/* ── INTRO ── */
+/* INTRO */
 .intro-top {
   padding: 48px 0 36px;
   border-bottom: 1px solid var(--border);
@@ -90,6 +90,9 @@ body {
   flex-shrink: 0;
 }
 
+.meta-dot--correct { background: var(--correct); }
+.meta-dot--amber { background: var(--amber); }
+
 .subject-list {
   display: flex;
   flex-wrap: wrap;
@@ -125,7 +128,7 @@ body {
 
 .btn-start:hover { background: var(--ink2); transform: translateY(-1px); }
 
-/* ── QUIZ BAR ── */
+/* QUIZ BAR */
 .quiz-bar {
   display: flex;
   align-items: center;
@@ -188,7 +191,7 @@ body {
   white-space: nowrap;
 }
 
-/* ── QUESTION CARD ── */
+/* QUESTION CARD */
 .q-card {
   background: var(--white);
   border: 1px solid var(--border);
@@ -218,13 +221,15 @@ body {
   font-size: 12px;
   color: var(--muted);
   margin-top: 9px;
-  display: none;
   align-items: center;
   gap: 5px;
 }
 
-/* ── OPTIONS ── */
+.q-hint--show { display: flex; }
+
+/* OPTIONS */
 .options { display: flex; flex-direction: column; gap: 7px; margin-bottom: 12px; }
+.answer-area { margin-bottom: 12px; }
 
 .opt {
   display: flex;
@@ -271,7 +276,7 @@ body {
 .opt-text { flex: 1; }
 .opt-check { font-size: 13px; margin-left: auto; padding-left: 8px; flex-shrink: 0; }
 
-/* ── FITB ── */
+/* FITB */
 .fitb-field {
   width: 100%;
   background: var(--white);
@@ -291,7 +296,7 @@ body {
 .fitb-field.wrong   { border-color: var(--wrong);   color: var(--wrong);   background: var(--wrong-light); }
 .fitb-field:disabled { cursor: default; }
 
-/* ── ORDER ── */
+/* ORDER */
 .order-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 8px; }
 
 .order-item {
@@ -314,6 +319,8 @@ body {
 .order-item.correct { border-color: var(--correct); background: var(--correct-light); color: var(--correct); }
 .order-item.wrong   { border-color: var(--wrong);   background: var(--wrong-light);   color: var(--wrong); }
 
+.order-text { flex: 1; }
+
 .drag-grip { color: var(--stone); font-size: 15px; flex-shrink: 0; }
 .order-pos {
   width: 21px; height: 21px;
@@ -324,7 +331,7 @@ body {
   flex-shrink: 0; color: var(--ink2);
 }
 
-/* ── FEEDBACK ── */
+/* FEEDBACK */
 .feedback {
   border-radius: var(--r);
   padding: 13px 15px;
@@ -344,7 +351,7 @@ body {
 .fb-head { font-weight: 600; font-size: 13px; margin-bottom: 2px; }
 .fb-body { color: var(--ink2); font-size: 12.5px; }
 
-/* ── ACTION ROW ── */
+/* ACTION ROW */
 .action-row {
   display: flex;
   align-items: center;
@@ -383,7 +390,7 @@ body {
 .btn-check:hover:not(:disabled) { background: var(--ink2); transform: translateY(-1px); }
 .btn-check:disabled { background: var(--stone); color: var(--muted); cursor: not-allowed; transform: none; }
 
-/* ── RESULTS ── */
+/* RESULTS */
 .result-hero {
   padding: 40px 0 28px;
   border-bottom: 1px solid var(--border);
@@ -429,7 +436,7 @@ body {
 
 .stat-l { font-size: 10.5px; font-weight: 500; letter-spacing: .4px; color: var(--muted); text-transform: uppercase; }
 
-/* ── ANALYSIS ── */
+/* ANALYSIS */
 .section-title {
   font-size: 11px;
   font-weight: 600;
@@ -438,6 +445,9 @@ body {
   color: var(--muted);
   margin-bottom: 14px;
 }
+
+.section-title--intro { margin-bottom: 9px; }
+.section-title--review { margin-bottom: 14px; }
 
 .cat-bars { display: flex; flex-direction: column; gap: 11px; margin-bottom: 28px; }
 .cat-row  { display: flex; flex-direction: column; gap: 5px; }
@@ -474,7 +484,7 @@ body {
 .badge-weak   { color: var(--wrong);   background: var(--wrong-light);   border: 1px solid #fecaca; }
 .badge-strong { color: var(--correct); background: var(--correct-light); border: 1px solid #bbf7d0; }
 
-/* ── FEEDBACK CARDS ── */
+/* FEEDBACK CARDS */
 .fb-cards { display: flex; flex-direction: column; gap: 7px; margin-bottom: 28px; }
 
 .fb-card {
@@ -492,7 +502,7 @@ body {
 .fbc-title { font-weight: 600; font-size: 13px; margin-bottom: 2px; color: var(--ink); }
 .fbc-body  { color: var(--ink2); font-size: 12.5px; }
 
-/* ── REVIEW ── */
+/* REVIEW */
 .review-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 28px; }
 
 .rev-item {
@@ -511,6 +521,7 @@ body {
 .rev-item.skip { border-left-color: var(--stone); }
 
 .rev-ico { font-size: 14px; flex-shrink: 0; padding-top: 1px; }
+.rev-content { flex: 1; min-width: 0; }
 .rev-q   { font-weight: 500; color: var(--ink); margin-bottom: 3px; line-height: 1.4; }
 .rev-ans { color: var(--muted); font-size: 12px; }
 .rev-correct-ans { color: var(--correct); font-size: 12px; margin-top: 2px; }
